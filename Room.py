@@ -6,3 +6,14 @@ class Chest(Room):
         self.chest_item = chest_item
     def enter(self, char):
         ...
+class Trap(Room):
+    def __init__(self,damage):
+        self.damage = damage
+    def enter(self, char):
+        ...
+class Monster(Room):
+    def __init__(self, strength, damage):
+        self.strength = strength
+        self.damage = damage
+    def enter(self, char):
+        ...
