@@ -1,3 +1,4 @@
+import random
 class Room:
     def enter(self,char):
         pass

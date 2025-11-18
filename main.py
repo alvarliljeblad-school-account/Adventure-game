@@ -1,8 +1,6 @@
 import Character
 import Item
 import Room
-import random
-
 
 def main():
     player = Character.Character(3,10)
