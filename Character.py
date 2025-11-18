@@ -14,5 +14,5 @@ class Character:
             Strength: base: {self.strength} + items: {self.strength_bonus} = {self.strength+ self.strength_bonus}""")
     def display_inventory(self):
         print("Inventory:")
-        for i in len(self.inventory):
-            print(f"{i}: {self.inventory[i].name}")
+        for i in range(len(self.inventory)):
+            print(f"{i}: {self.inventory[i]}")
