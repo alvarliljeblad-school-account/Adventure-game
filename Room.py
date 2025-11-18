@@ -8,6 +8,11 @@ class Chest(Room):
         self.chest_item = chest_item
     def enter(self, char):
         print(f"You find a chest containing a {self.chest_item}")
+        selection = input("Will you pick it up?(y/n) ->")
+        if selection == "y":
+            char.inventory.append(self.chest_item)
+        else:
+            print("You pass the item")
 class Trap(Room):
     def __init__(self,damage):
         self.damage = damage
