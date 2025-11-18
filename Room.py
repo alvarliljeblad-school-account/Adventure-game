@@ -1,4 +1,5 @@
 import random
+import Item
 class Room:
     def enter(self,char):
         pass
@@ -20,7 +21,7 @@ class Monster(Room):
         ...
 
 def generate_room(char):
-    doors = [Room.Chest(...),Room.Monster(random.randint(1,5),random.randint(1,3),Room.Trap(random.randint(1,3)))]
+    doors = [Room.Chest(Item.Item.generate()),Room.Monster(random.randint(1,5),random.randint(1,3),Room.Trap(random.randint(1,3)))]
     doors = random.shuffle(doors)
     print("There are 3 doors, which do you enter")
     selection = input(" ->")
