@@ -7,12 +7,13 @@ class Chest(Room):
     def __init__(self,chest_item):
         self.chest_item = chest_item
     def enter(self, char):
-        ...
+        print(f"You find a chest containing a {self.chest_item}")
 class Trap(Room):
     def __init__(self,damage):
         self.damage = damage
     def enter(self, char):
-        ...
+        print(f"You walk into a trap and take {self.damage} damage")
+        char.hp -= self.damage
 class Monster(Room):
     def __init__(self, strength, damage):
         self.strength = strength
@@ -21,7 +22,7 @@ class Monster(Room):
         ...
 
 def generate_room(char):
-    doors = [Room.Chest(Item.Item.generate()),Room.Monster(random.randint(1,5),random.randint(1,3),Room.Trap(random.randint(1,3)))]
+    doors = [Room.Chest(Item.Item.generate),Room.Monster(random.randint(1,5),random.randint(1,3),Room.Trap(random.randint(1,3)))]
     doors = random.shuffle(doors)
     print("There are 3 doors, which do you enter")
     selection = input(" ->")

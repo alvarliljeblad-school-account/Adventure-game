@@ -9,6 +9,8 @@ class Item:
         pass
     def discard(self,char):
         pass
+    def __str__(self):
+        return f"+{self.potency} {self.name}"
     def generate():
         if random.randint(0,1) == 1:
             return PassiveStrengthItem.generate()
