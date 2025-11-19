@@ -1,5 +1,4 @@
 import Character
-import Item
 import Room
 import gameInput
 

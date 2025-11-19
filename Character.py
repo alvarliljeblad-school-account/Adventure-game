@@ -22,3 +22,9 @@ class Character:
         for i in range(len(self.inventory)):
             print(f"{i}: {self.inventory[i]}")
         input("Press enter to continue") #Pause until the player presses enter
+    def add_to_inventory(self, item):
+        """Adds an item to invetory"""
+        self.inventory.append(item)
+        item.gain(self)
+    def get_strength(self):
+        return self.strength+self.strength_bonus
