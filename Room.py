@@ -29,15 +29,15 @@ class Monster(Room):
         print(f"You encounter a monster with {self.strength} strength, {self.damage} damage and {self.hp} hp")
         print("Do you 1: fight or 2: run")
         selection = gameInput.get_str_input(["1","2"])
-        if selection == "1":
-            #If player is weaker, they will take a hit of damage when running away
-            if char.strength < self.strength:
-                print(f"you run and take {self.damage} damage")
-                char.hp -= self.damage
-            else:
-                print("you run away")
-        elif selection == "2":
-            while self.hp > 0 and char.hp > 0:
+        while self.hp > 0 and char.hp > 0:
+            if selection == "1":
+                #If player is weaker, they will take a hit of damage when running away
+                if char.strength < self.strength:
+                    print(f"you run and take {self.damage} damage")
+                    char.hp -= self.damage
+                else:
+                    print("you run away")
+            elif selection == "2":
                 #Roll a d20 for each and add their strength
                 char_roll = random.randint(1,20) + char.strength
                 monster_roll = random.randint(1,20) + self.strength
@@ -45,9 +45,10 @@ class Monster(Room):
                     self.hp -= char.damage
                 elif monster_roll > char_roll:
                     char.hp -= self.damage
-            if self.hp <= 0:
-                char.lvl +=1
-                char.strength += 1
+        if self.hp <= 0:
+            char.lvl +=1
+            char.strength += 1
+
 
         
 
