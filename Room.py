@@ -48,11 +48,12 @@ class Monster(Room):
                 print(f"The monster rolls a {monster_roll} for a total of {monster_total}")
                 if char_total >= monster_total:
                     self.hp -= char.damage
-                    print(f"You deal {char.damage} damgage to the monster")
+                    print(f"You deal {char.damage} damage to the monster")
                 elif monster_total > char_total:
                     char.hp -= self.damage
-                    print(f"hhe monster deals {self.damage}damage to you")
+                    print(f"the monster deals {self.damage} damage to you")
         if self.hp <= 0:
+            print("You level up, your strength increases by 1")
             char.level +=1
             char.strength += 1
 
