@@ -18,7 +18,7 @@ def main():
         elif selection == "3":
             ...
         elif selection == "4":
-            ...
+            Room.generate_room(player)
         elif selection == "q":
             return
         else:
