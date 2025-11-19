@@ -1,6 +1,7 @@
 import Character
 import Item
 import Room
+import gameInput
 
 def main():
     player = Character.Character(3,10)
@@ -9,7 +10,7 @@ def main():
               1: See stats || 2: See inventory
               3: Use item  || 4: Enter a room
               q: quit game""")
-        selection = input("Selection ->")
+        selection = gameInput.get_str_input(["1","2","3","4","q"],"Selection ->")
         if selection == "1":
             player.display_stats()
         elif selection == "2":
