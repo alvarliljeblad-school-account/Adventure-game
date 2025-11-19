@@ -6,6 +6,7 @@ class Character:
         self.max_hp: int = hp
         self.inventory: list = []
         self.level:int = 1
+        self.damage: int = 3
     def display_stats(self):
         print(f"""
                 Stats:
