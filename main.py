@@ -2,9 +2,19 @@ import Character
 import Room
 import gameInput
 
+def win():
+    print("You have won!!")
+    print("Hooray!")
+
+def death():
+    print("You died")
+    print("Boohoo")
+
 def main():
     player = Character.Character(3,10)
     while player.hp > 0:
+        if player.level >= 10:
+            win()
         print("""What would you like to do?
               1: See stats || 2: See inventory
               3: Use item  || 4: Enter a room
@@ -22,6 +32,7 @@ def main():
             return
         else:
             print("Invalid selection please try again")
+    death()
 
 
 if __name__ == "__main__":
