@@ -9,6 +9,7 @@ class Character:
         self.inventory: list = []
         self.level:int = 1
         self.damage: int = 3
+        self.max_inventory: int = 5
     def display_stats(self):
         """Prints the players current stats"""
         print(f"""
@@ -23,6 +24,18 @@ class Character:
             print(f"{i}: {self.inventory[i]}")
     def add_to_inventory(self, item):
         """Adds an item to invetory"""
+        #Check if inventory is
+        if len(self.inventory) == self.max_inventory:
+            print("Your inventory is full")
+            self.display_inventory()
+            print("What item do you want to discard, c to cancel")
+            choise = gameInput.get_str_input(list(range(self.inventory))+["c"])
+            if choise == "c":
+                print("You choose to not discard an item")
+                return
+            else:
+                self.inventory.pop(int(choise)).discard(self)
+
         self.inventory.append(item)
         item.gain(self)
     def get_strength(self):
