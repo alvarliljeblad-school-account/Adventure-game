@@ -26,10 +26,17 @@ class Character:
         self.inventory.append(item)
         item.gain(self)
     def get_strength(self):
+        """Return the characters strength with all bonuses added"""
         return self.strength+self.strength_bonus
     def use_item(self):
+        """Lets the player choose an item and then activates that items activate function"""
+        # If the inventory is empty you cannot use an item
         if len(self.inventory)==0:
             print("You have no items")
+            return
         self.display_inventory()
-        itemid = gameInput.get_str_input(range(len(self.inventory)),"What item would you like to use -> ")
-        self.inventory[itemid].activate(self)
+        itemid = gameInput.get_str_input(list(range(len(self.inventory)))+["c"],"What item would you like to use or c to cancel -> ")
+        if itemid == "c":
+            print("You decide not to use an item")
+            return
+        self.inventory[int(itemid)].activate(self)
