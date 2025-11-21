@@ -32,7 +32,7 @@ class Monster(Room):
             selection = gameInput.get_str_input(["1","2"])
             if selection == "2":
                 #If player is weaker, they will take a hit of damage when running away
-                if char.strength < self.strength:
+                if char.get_strength() < self.strength:
                     print(f"you run and take {self.damage} damage")
                     char.hp -= self.damage
                 else:
