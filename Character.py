@@ -1,3 +1,4 @@
+import gameInput
 class Character:
     """Class for the player character, containing stats and methods for displaying them"""
     def __init__(self,strength, hp):
@@ -15,16 +16,20 @@ class Character:
             Hp: {self.hp}/{self.max_hp}
             Level: {self.level}
             Strength: base: {self.strength} + items: {self.strength_bonus} = {self.strength+ self.strength_bonus}""")
-        input("Press enter to continue") # to pause until the player presses enter
     def display_inventory(self):
         """Prints the constents of the playes inventory"""
         print("Inventory:")
         for i in range(len(self.inventory)):
             print(f"{i}: {self.inventory[i]}")
-        input("Press enter to continue") #Pause until the player presses enter
     def add_to_inventory(self, item):
         """Adds an item to invetory"""
         self.inventory.append(item)
         item.gain(self)
     def get_strength(self):
         return self.strength+self.strength_bonus
+    def use_item(self):
+        if len(self.inventory)==0:
+            print("You have no items")
+        self.display_inventory()
+        itemid = gameInput.get_str_input(range(len(self.inventory)),"What item would you like to use -> ")
+        self.inventory[itemid].activate(self)

@@ -15,7 +15,7 @@ def main():
         elif selection == "2":
             player.display_inventory()
         elif selection == "3":
-            ...
+            player.use_item()
         elif selection == "4":
             Room.generate_room(player)
         elif selection == "q":

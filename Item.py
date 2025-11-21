@@ -6,7 +6,7 @@ class Item:
     def gain(self,char):
         pass
     def activate(self,char):
-        pass
+        char.inventory.remove(self)
     def discard(self,char):
         pass
     def __str__(self):
