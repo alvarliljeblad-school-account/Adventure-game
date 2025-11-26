@@ -1,4 +1,5 @@
 import gameInput
+from vector import Vec2
 class Character:
     """Class for the player character, containing stats and methods for displaying them"""
     def __init__(self,strength, hp):
@@ -10,6 +11,7 @@ class Character:
         self.level:int = 1
         self.damage: int = 3
         self.max_inventory: int = 5
+        self.pos: Vec2 = Vec2(0,0)
     def display_stats(self):
         """Prints the players current stats"""
         print(f"""
