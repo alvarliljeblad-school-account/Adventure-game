@@ -35,11 +35,14 @@ class World:
     def __str__(self):
         floormap = [[termcolor.colored("▮ ", "white") if wall else termcolor.colored("▯ ","white") for wall in row] for row in self.walls]
         floormap[self.player.pos.y][self.player.pos.x] = termcolor.colored("P ", "light_magenta")
+        for enemy in self.enemies:
+            floormap[enemy.pos.y][enemy.pos.x] = termcolor.colored("E ","red")
         return "".join(["".join(row)+"\n" for row in floormap])
         
 
 if __name__ == "__main__":
     test = World()
+    test.enemies.append(Enemy(3,3))
     test.walls[3][2] = True
     test.generate_dijkstra()
 
