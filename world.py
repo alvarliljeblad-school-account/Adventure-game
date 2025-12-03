@@ -3,12 +3,12 @@ from vector import Vec2
 from enemy import Enemy
 import termcolor
 class World:
-    def __init__(self):
+    def __init__(self) -> World:
         self.player: Character
         self.enemies: list[Enemy] = []
         self.walls: list[list[bool]] = [[False for _ in range(10)] for _ in range(10)]
         self.dijkstra_grid: list[list[int]] = [[99999 if b else 1000 for b in a] for a in self.walls]
-    def generate_dijkstra(self):
+    def generate_dijkstra(self) -> None:
         self.dijkstra_grid = [[99999 if b else 1000 for b in a] for a in self.walls]
         changed = True
         while changed:
@@ -32,7 +32,7 @@ class World:
                         if min_neighbour +1 < self.dijkstra_grid[y][x]:
                             self.dijkstra_grid[y][x] = min_neighbour + 1
                             changed = True
-    def open_layout_from_file(filename:str,floor_id:str,start_player:Character):
+    def open_layout_from_file(filename:str,floor_id:str,start_player:Character) -> World:
         """Returns a world from a layout file"""
         # Read file
         file = open(file=filename,mode="r")
@@ -95,11 +95,11 @@ class World:
         floor.walls = walls
         floor.generate_dijkstra()
         return floor 
-    def take_turn(self):
+    def take_turn(self) -> None:
         self.player.take_turn(self)
         [enemy.take_turn() for enemy in self.enemies]
 
-    def __str__(self):
+    def __str__(self) -> str:
         floormap = [[termcolor.colored("▮ ", "white") if wall else termcolor.colored("▯ ","white") for wall in row] for row in self.walls]
         floormap[self.player.pos.y][self.player.pos.x] = termcolor.colored("P ", "light_magenta")
         for enemy in self.enemies:

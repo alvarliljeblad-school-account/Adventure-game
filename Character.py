@@ -2,7 +2,7 @@ import gameInput
 from vector import Vec2
 class Character:
     """Class for the player character, containing stats and methods for displaying them"""
-    def __init__(self,strength, hp):
+    def __init__(self,strength, hp) -> Character:
         self.strength: int = strength
         self.strength_bonus:int = 0
         self.hp: int = hp
@@ -12,19 +12,19 @@ class Character:
         self.damage: int = 3
         self.max_inventory: int = 5
         self.pos: Vec2 = Vec2(0,0)
-    def display_stats(self):
+    def display_stats(self) -> None:
         """Prints the players current stats"""
         print(f"""
                 Stats:
             Hp: {self.hp}/{self.max_hp}
             Level: {self.level}
             Strength: base: {self.strength} + items: {self.strength_bonus} = {self.strength+ self.strength_bonus}""")
-    def display_inventory(self):
+    def display_inventory(self) -> None:
         """Prints the constents of the playes inventory"""
         print("Inventory:")
         for i in range(len(self.inventory)):
             print(f"{i}: {self.inventory[i]}")
-    def add_to_inventory(self, item):
+    def add_to_inventory(self, item) -> None:
         """Adds an item to invetory"""
         #Check if inventory is
         if len(self.inventory) == self.max_inventory:
@@ -40,10 +40,10 @@ class Character:
 
         self.inventory.append(item)
         item.gain(self)
-    def get_strength(self):
+    def get_strength(self) -> int:
         """Return the characters strength with all bonuses added"""
         return self.strength+self.strength_bonus
-    def use_item(self):
+    def use_item(self) -> None:
         """Lets the player choose an item and then activates that items activate function"""
         # If the inventory is empty you cannot use an item
         if len(self.inventory)==0:

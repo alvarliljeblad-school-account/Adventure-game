@@ -13,6 +13,9 @@ def death() -> None:
     print("You died")
     print("Boohoo")
 
+def start() -> None:
+    pass
+
 def main() -> None:
     """Main function of the program, contains the mainloop"""
     floor = World()
