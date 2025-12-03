@@ -12,6 +12,8 @@ class Character:
         self.damage: int = 3
         self.max_inventory: int = 5
         self.pos: Vec2 = Vec2(0,0)
+        self.actions = 1
+        self.movement = 5
     def display_stats(self) -> None:
         """Prints the players current stats"""
         print(f"""
@@ -55,3 +57,8 @@ class Character:
             print("You decide not to use an item")
             return
         self.inventory[int(itemid)].activate(self)
+    def take_turn(self, world):
+        remaining_actions = self.actions
+        remaining_movement = self.movement
+        while remaining_actions > 0 or remaining_movement > 0:
+            print(f"Hp:{}")

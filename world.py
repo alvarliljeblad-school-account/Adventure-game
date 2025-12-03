@@ -96,6 +96,7 @@ class World:
         floor.generate_dijkstra()
         return floor 
     def take_turn(self) -> None:
+        print(self)
         self.player.take_turn(self)
         [enemy.take_turn() for enemy in self.enemies]
 
