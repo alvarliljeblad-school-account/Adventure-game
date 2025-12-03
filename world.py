@@ -32,49 +32,69 @@ class World:
                         if min_neighbour +1 < self.dijkstra_grid[y][x]:
                             self.dijkstra_grid[y][x] = min_neighbour + 1
                             changed = True
-    def open_layout_from_file(filename:str,floor_id:str):
+    def open_layout_from_file(filename:str,floor_id:str,start_player:Character):
+        """Returns a world from a layout file"""
+        # Read file
         file = open(file=filename,mode="r")
         rawlines = file.readlines()
         file.close()
-        rawlines = [line.strip() for line in rawlines]
-        print(rawlines)
-        readingmode = ""
-        mapobjects = {"0":0}
-        worldsize = Vec2(5,5)
-        walls = []
-        player = None
-        enemies = []
-        for line in rawlines:
-            command_parts = line.split(" ")
-            print(command_parts)
+        rawlines = [line.strip() for line in rawlines] # Strip lines
+        reading_mode = "" # Has not found the correct place to read
+        map_objects = {"0":[0]} # Definition of all floor objects
+        world_size = Vec2(5,5) # Default world size
+        walls = [] # A nested list containing all walls
+        player:Character = start_player # A referance to the player character
+        enemies = [] # A list containig all enemies
+        for line in rawlines: # Go line by line
+            command_parts = line.split(" ") # Split the command
             if command_parts[0] == "@":
+                # Look for the correct floor id denote by the @ sign
                 if command_parts[1] == floor_id:
-                    readingmode = "data"
-            elif readingmode == "data":
-                if command_parts[0] == "#":
-                    mapobjects[command_parts[1]] = command_parts[2:-1]
-                elif command_parts[0] == "%":
+                    reading_mode = "data"
+            elif reading_mode == "data":
+                # Read data about the floor
+                if command_parts[0] == "#": # Definitions for following map
+                    map_objects[command_parts[1]] = command_parts[2::]
+                elif command_parts[0] == "%": # Data
                     if command_parts[1] == "size":
-                        worldsize = Vec2(command_parts[2],command_parts[3])
+                        # Sets map size
+                        world_size = Vec2(int(command_parts[2]),int(command_parts[3]))
                     elif command_parts[1] == "map":
-                        readingmode = "map"
+                        # Denotes that the map comes at the next line
+                        reading_mode = "map"
                     elif command_parts[1] == "end":
-                        readingmode = ""
-            elif readingmode == "map":
-                mapline = []
+                        # Ends the section
+                        reading_mode = ""
+            elif reading_mode == "map":
+                # Code for reading the map
+                mapline = [] # one line in the map
                 for char in line:
-                    if mapobjects[char] == "w":
+                    # Lookup character in map objects
+                    # Check if there is a wall
+                    if map_objects[char][0] == "w":
                         mapline.append(True)
                     else:
                         mapline.append(False)
-                    if mapobjects[char].split(" ")[0] == "e":
-                        attributes = mapobjects[char].split[" "]
-                        enemies.append(Enemy([1],[2],[3],Vec2(len(mapline)-1,len(walls))))
-                
-
-
-
-            
+                    if map_objects[char][0] == "e":
+                        # Check for enemies and add them to enemies
+                        attributes = map_objects[char]
+                        enemies.append(Enemy(attributes[1],attributes[2],attributes[3],Vec2(len(mapline)-1,len(walls))))
+                    if map_objects[char][0] == "p":
+                        # Check for player and set player position
+                        player.pos = Vec2(len(mapline)-1,len(walls))
+                # add the line to the bigger wall grid
+                walls.append(mapline)
+                # Check if the map is done
+                if len(walls) == world_size.y:
+                    reading_mode = "data"
+    
+        # When done create the world object and return it
+        floor = World()
+        floor.enemies = enemies
+        floor.player = player
+        floor.walls = walls
+        floor.generate_dijkstra()
+        return floor 
     def take_turn(self):
         self.player.take_turn(self)
         [enemy.take_turn() for enemy in self.enemies]
@@ -88,4 +108,4 @@ class World:
         
 
 if __name__ == "__main__":
-    World.open_layout_from_file("floor_layouts.txt","1")
+    print(World.open_layout_from_file("floor_layouts.txt","1",Character(1,1)))
