@@ -3,7 +3,7 @@ from vector import Vec2
 from enemy import Enemy
 import termcolor
 class World:
-    def __init__(self) -> World:
+    def __init__(self):
         self.player: Character
         self.enemies: list[Enemy] = []
         self.walls: list[list[bool]] = [[False for _ in range(10)] for _ in range(10)]
@@ -32,7 +32,7 @@ class World:
                         if min_neighbour +1 < self.dijkstra_grid[y][x]:
                             self.dijkstra_grid[y][x] = min_neighbour + 1
                             changed = True
-    def open_layout_from_file(filename:str,floor_id:str,start_player:Character) -> World:
+    def open_layout_from_file(filename:str,floor_id:str,start_player:Character):
         """Returns a world from a layout file"""
         # Read file
         file = open(file=filename,mode="r")

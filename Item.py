@@ -1,7 +1,7 @@
 import random
 class Item:
     """Class for items"""
-    def __init__(self,name:str,potency:int) -> Item:
+    def __init__(self,name:str,potency:int):
         """Each item has a name and potencty"""
         self.name: str = name
         self.potency: int = potency
@@ -17,7 +17,7 @@ class Item:
     def __str__(self) -> None:
         """Returns a string of the item"""
         return f"+{self.potency} {self.name}"
-    def generate() -> Item:
+    def generate():
         """Creates a item of random type"""
         if random.randint(0,1) == 1:
             return PassiveStrengthItem.generate()
@@ -33,7 +33,7 @@ class PassiveStrengthItem(Item):
     def discard(self, char) -> None:
         """Decreases the characters strength bonus based on potency"""
         char.strength_bonus -= self.potency
-    def generate() -> PassiveStrengthItem:
+    def generate():
         """Creates a passive strength item with a random name and potency"""
         return PassiveStrengthItem(random.choice(PassiveStrengthItem.names),random.randint(1,4))
 
@@ -44,6 +44,6 @@ class HealingItem(Item):
         """The player regains health base on the items potency"""
         char.hp = min(char.hp+self.potency,char.max_hp)
         char.inventory.remove(self)
-    def generate() -> HealingItem:
+    def generate():
         """Creates a heling item with a random name and potency"""
         return HealingItem(random.choice(HealingItem.names),random.randint(1,4))

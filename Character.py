@@ -2,7 +2,7 @@ import gameInput
 from vector import Vec2
 class Character:
     """Class for the player character, containing stats and methods for displaying them"""
-    def __init__(self,strength, hp) -> Character:
+    def __init__(self,strength:int, hp:int):
         self.strength: int = strength
         self.strength_bonus:int = 0
         self.hp: int = hp
