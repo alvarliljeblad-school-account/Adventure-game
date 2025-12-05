@@ -4,7 +4,7 @@ class Vec2:
         self.x:int = x
         self.y:int = y
     def __add__(self,other):
-        return Vec2(self.x+other.x,self.y,other.y)
+        return Vec2(self.x+other.x,self.y+other.y)
     def __sub__(self,other):
         return Vec2(self.x-other.x,self.y-other.y)
     def __mul__(self,other):
