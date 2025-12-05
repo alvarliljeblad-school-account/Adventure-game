@@ -1,5 +1,6 @@
 import gameInput
 from vector import Vec2
+import termcolor
 class Character:
     """Class for the player character, containing stats and methods for displaying them"""
     def __init__(self,strength:int, hp:int):
@@ -63,5 +64,48 @@ class Character:
         while remaining_actions > 0 or remaining_movement > 0:
             print(f"Hp: {self.hp}/{self.max_hp}, Str: {self.get_strength()}, Level: {self.level}, Actions: {remaining_actions}/{self.actions}, Movement: {remaining_movement}/{self.movement}")
             print(world)
-            print("""A: Left  S: Down   W: Up   D: Right    A: Attack   I: Show inventory   U: Use item""")
-            gameInput.get_str_input([])
+            print("""A: Left  S: Down   W: Up   D: Right    T: Attack   I: Show inventory   C:Check stats   P:Pass""")
+            inp = gameInput.get_str_input(["A","S","W","D","T","I","C","P"])
+            if inp == "p":
+                remaining_actions = 0
+                remaining_movement = 0
+            elif inp == "i":
+                self.display_inventory()
+                gameInput.pause()
+            elif inp == "c":
+                self.display_stats()
+                gameInput.pause()
+            elif inp == "a":
+                if world.walls[self.pos.y][self.pos.x-1]:
+                    print("There is a wall in the way")
+                elif remaining_movement > 0:
+                    self.pos.x-=1
+                    remaining_movement-=1
+                else:
+                    print(termcolor.colored("Out of movement","red"))
+            elif inp == "d":
+                if world.walls[self.pos.y][self.pos.x+1]:
+                    print("There is a wall in the way")
+                elif remaining_movement > 0:
+                    self.pos.x+=1
+                    remaining_movement-=1
+                else:
+                    print(termcolor.colored("Out of movement","red"))
+            elif inp == "w":
+                if world.walls[self.pos.y-1][self.pos.x]:
+                    print("There is a wall in the way")
+                elif remaining_movement > 0:
+                    self.pos.y-=1
+                    remaining_movement-=1
+                else:
+                    print(termcolor.colored("Out of movement","red"))
+            elif inp == "s":
+                if world.walls[self.pos.y+1][self.pos.x]:
+                    print("There is a wall in the way")
+                elif remaining_movement > 0:
+                    self.pos.x+=1
+                    remaining_movement-=1
+                else:
+                    print(termcolor.colored("Out of movement","red"))
+
+            

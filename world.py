@@ -98,7 +98,7 @@ class World:
     def take_turn(self) -> None:
         print(self)
         self.player.take_turn(self)
-        [enemy.take_turn() for enemy in self.enemies]
+        [enemy.take_turn(self) for enemy in self.enemies]
 
     def __str__(self) -> str:
         floormap = [[termcolor.colored("▮ ", "white") if wall else termcolor.colored("▯ ","white") for wall in row] for row in self.walls]
