@@ -103,7 +103,7 @@ class Character:
                 if world.walls[self.pos.y+1][self.pos.x]:
                     print("There is a wall in the way")
                 elif remaining_movement > 0:
-                    self.pos.x+=1
+                    self.posyy+=1
                     remaining_movement-=1
                 else:
                     print(termcolor.colored("Out of movement","red"))
