@@ -11,3 +11,5 @@ class Vec2:
         return Vec2(self.x*other,self.y*other)
     def __abs__(self) -> float:
         return math.hypot(self.x,self.y)
+    def __str__(self) -> str:
+        return f"({self.x}, {self.y})"
