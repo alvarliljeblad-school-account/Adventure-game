@@ -61,4 +61,7 @@ class Character:
         remaining_actions = self.actions
         remaining_movement = self.movement
         while remaining_actions > 0 or remaining_movement > 0:
-            print(f"Hp:{}")
+            print(f"Hp: {self.hp}/{self.max_hp}, Str: {self.get_strength()}, Level: {self.level}, Actions: {remaining_actions}/{self.actions}, Movement: {remaining_movement}/{self.movement}")
+            print(world)
+            print("""A: Left  S: Down   W: Up   D: Right    A: Attack   I: Show inventory   U: Use item""")
+            gameInput.get_str_input([])
