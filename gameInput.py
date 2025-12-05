@@ -7,3 +7,5 @@ def get_str_input(possible_inputs:list,input_str:str = "->")->str:
         player_input = input(input_str).lower()
     #Return that value
     return player_input
+def pause() -> None:
+    input("Press enter to continue")
