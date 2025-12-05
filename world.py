@@ -98,6 +98,7 @@ class World:
     def take_turn(self) -> None:
         print(self)
         self.player.take_turn(self)
+        self.generate_dijkstra()
         [enemy.take_turn(self) for enemy in self.enemies]
 
     def __str__(self) -> str:
