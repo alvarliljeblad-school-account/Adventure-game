@@ -78,7 +78,7 @@ class World:
                     if map_objects[char][0] == "e":
                         # Check for enemies and add them to enemies
                         attributes = map_objects[char]
-                        enemies.append(Enemy(attributes[1],attributes[2],attributes[3],Vec2(len(mapline)-1,len(walls))))
+                        enemies.append(Enemy(int(attributes[1]),int(attributes[2]),int(attributes[3]),Vec2(len(mapline)-1,len(walls))))
                     if map_objects[char][0] == "p":
                         # Check for player and set player position
                         player.pos = Vec2(len(mapline)-1,len(walls))

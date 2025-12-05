@@ -1,6 +1,7 @@
 import gameInput
 from vector import Vec2
 import termcolor
+import random
 class Character:
     """Class for the player character, containing stats and methods for displaying them"""
     def __init__(self,strength:int, hp:int):
@@ -13,8 +14,9 @@ class Character:
         self.damage: int = 3
         self.max_inventory: int = 5
         self.pos: Vec2 = Vec2(0,0)
-        self.actions = 1
-        self.movement = 5
+        self.actions:int = 1
+        self.movement:int = 5
+        self.defence:int = 10
     def display_stats(self) -> None:
         """Prints the players current stats"""
         print(f"""
@@ -46,6 +48,10 @@ class Character:
     def get_strength(self) -> int:
         """Return the characters strength with all bonuses added"""
         return self.strength+self.strength_bonus
+    def get_defence(self) -> int:
+        return self.defence
+    def take_damage(self, damage: int) -> None:
+        self.hp -= damage
     def use_item(self) -> None:
         """Lets the player choose an item and then activates that items activate function"""
         # If the inventory is empty you cannot use an item
@@ -58,6 +64,18 @@ class Character:
             print("You decide not to use an item")
             return
         self.inventory[int(itemid)].activate(self)
+    def attack(self,opponent):
+        attack_roll = random.randint(1,20)
+        attack_value = attack_roll + self.get_strength()
+        if attack_roll == 20:
+            print(f"Critical hit You deal {self.damage*2} damage to the enemy")
+            opponent.take_damage(self.damage*2)
+        elif attack_value >= opponent.get_defence():
+            print(f"You hi the enemy and deal {self.damage} damage")
+            opponent.take_damage(self.damage)
+        else:
+            print("You miss")
+
     def take_turn(self, world):
         remaining_actions = self.actions
         remaining_movement = self.movement

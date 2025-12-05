@@ -1,4 +1,5 @@
 from vector import Vec2
+import random
 class Enemy:
     """Class for enemies"""
     def __init__(self,strength: int, hp: int, damage:int, pos:Vec2):
@@ -6,7 +7,25 @@ class Enemy:
         self.hp: int = hp
         self.max_hp: int = hp
         self.damage: int = damage
+        self.defence: int = 5
         self.pos: Vec2 = pos
+    def get_strength(self) -> int:
+        return self.strength
+    def get_defence(self) -> int:
+        return self.defence
+    def take_damage(self, damage: int) -> int:
+        self.hp -= damage
+    def attack(self,opponent):
+        attack_roll = random.randint(1,20)
+        attack_value = attack_roll + self.get_strength()
+        if attack_roll == 20:
+            print(f"Critical hit! You take {self.damage*2} damage")
+            opponent.take_damage(self.damage)
+        elif attack_value >= opponent.get_defence():
+            opponent.take_damage(self.damage)
+            print(f"You take {self.damage} damage")
+        else:
+            print(f"The enemy misses")
     def take_turn(self,world):
         min_neighbour:int = world.dijkstra_grid[self.pos.y][self.pos.x]
         min_pos:Vec2 = self.pos
@@ -36,4 +55,4 @@ class Enemy:
         if min_neighbour != 0:
             self.pos = min_pos
         else:
-            ... #Attack player
+            self.attack(world.player)
