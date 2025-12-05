@@ -25,7 +25,8 @@ def start() -> World:
 def main() -> None:
     """Main function of the program, contains the mainloop"""
     floor = start()
-    floor.take_turn()
+    while True:
+        floor.take_turn()
 
 
 if __name__ == "__main__":
