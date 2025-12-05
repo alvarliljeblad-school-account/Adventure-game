@@ -107,5 +107,3 @@ class Character:
                     remaining_movement-=1
                 else:
                     print(termcolor.colored("Out of movement","red"))
-
-            
