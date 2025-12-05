@@ -7,4 +7,6 @@ class Enemy:
         self.max_hp: int = hp
         self.damage: int = damage
         self.pos: Vec2 = Vec2(2,2)
+    def take_turn(self,world):
+        ...
         
