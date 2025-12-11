@@ -1,5 +1,4 @@
 from Character import Character
-import Room
 from gameInput import get_str_input
 from world import World
 MAP_FILE = "floor_layouts.txt"
@@ -25,8 +24,10 @@ def start() -> World:
 def main() -> None:
     """Main function of the program, contains the mainloop"""
     floor = start()
-    while True:
-        floor.take_turn()
+    running = True
+    while running:
+        running = floor.take_turn()
+    death()
 
 
 if __name__ == "__main__":

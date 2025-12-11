@@ -95,11 +95,14 @@ class World:
         floor.walls = walls
         floor.generate_dijkstra()
         return floor 
-    def take_turn(self) -> None:
+    def take_turn(self) -> bool:
         print(self)
-        self.player.take_turn(self)
+        is_alive = self.player.take_turn(self)
+        if is_alive == False:
+            return False
         self.generate_dijkstra()
         [enemy.take_turn(self) for enemy in self.enemies]
+        return True
 
     def __str__(self) -> str:
         floormap = [[termcolor.colored("▮ ", "white") if wall else termcolor.colored("▯ ","white") for wall in row] for row in self.walls]

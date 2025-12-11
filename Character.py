@@ -77,6 +77,9 @@ class Character:
             print("You miss")
 
     def take_turn(self, world):
+        #Check if dead
+        if self.hp <= 0:
+            return False
         remaining_actions = self.actions
         remaining_movement = self.movement
         while remaining_actions > 0 or remaining_movement > 0:
@@ -125,3 +128,4 @@ class Character:
                     remaining_movement-=1
                 else:
                     print(termcolor.colored("Out of movement","red"))
+        return True
