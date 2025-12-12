@@ -102,6 +102,8 @@ class World:
             return False
         self.generate_dijkstra()
         [enemy.take_turn(self) for enemy in self.enemies]
+        if len(self.enemies) == 0:
+            ... # End of floor
         return True
 
     def __str__(self) -> str:

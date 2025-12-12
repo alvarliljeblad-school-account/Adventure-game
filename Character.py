@@ -76,6 +76,38 @@ class Character:
         else:
             print("You miss")
 
+    def try_attack(self,enemies):
+        print("What direction do you attack in  A: Left S: Down W: Up   D: Right")
+        inp = gameInput.get_str_input(["A","S","W","D"])
+        attack_dir = Vec2(0,0)
+        if inp == "a":
+            attack_dir = Vec2(-1,0)
+        elif inp == "s":
+            attack_dir = Vec2(0,1)
+        elif inp == "w":
+            attack_dir = Vec2(0,-1)
+        elif inp == "d":
+            attack_dir = Vec2(1,0)
+        attack_pos = self.pos + attack_dir
+        print(attack_pos)
+        print([str(enemy.pos) for enemy in enemies]) 
+        available_enemies = []
+        for enemy in enemies:
+            print(enemy.pos,attack_pos)
+            if enemy.pos == attack_pos:
+                available_enemies.append(enemy)
+        
+        if len(available_enemies) == 1:
+            self.attack(available_enemies[0])
+        elif len(available_enemies) > 1:
+            print("There are multiple enemies on that tile, choose one")
+            for enemy in range(len(available_enemies)):
+                print(f"{enemy}: {available_enemies[enemy]}",end=",")
+            enemy_choise = gameInput.get_str_input(range(len(available_enemies)))
+            self.attack(available_enemies(enemy_choise))
+        else:
+            print("There are no eligeble enemies")
+
     def take_turn(self, world):
         #Check if dead
         if self.hp <= 0:
@@ -96,6 +128,9 @@ class Character:
             elif inp == "c":
                 self.display_stats()
                 gameInput.pause()
+            elif inp == "t":
+                self.try_attack(world.enemies)
+                remaining_actions-=1
             elif inp == "a":
                 if world.walls[self.pos.y][self.pos.x-1]:
                     print("There is a wall in the way")
@@ -128,4 +163,7 @@ class Character:
                     remaining_movement-=1
                 else:
                     print(termcolor.colored("Out of movement","red"))
+            #Check if enemies have died
+            print(world.enemies)
+            world.enemies = list(filter(lambda a: a.hp > 0, world.enemies))
         return True
