@@ -11,6 +11,8 @@ class Enemy:
         self.pos: Vec2 = pos
     def __str__(self):
         return f"Enemy at pos: {str(self.pos)}"
+    def get_xp(self) -> int:
+        return self.strength*self.hp*self.damage
     def get_strength(self) -> int:
         return self.strength
     def get_defence(self) -> int:

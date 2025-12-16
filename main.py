@@ -17,7 +17,7 @@ def start() -> World:
     print("Welcome to the game")
     print("What floor would you like to go to")
     floor_id = get_str_input(["1"])
-    player = Character(4,4)
+    player = Character()
     floor = World.open_layout_from_file(MAP_FILE,floor_id,player)
     return floor
 

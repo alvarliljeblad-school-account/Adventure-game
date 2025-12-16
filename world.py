@@ -8,6 +8,8 @@ class World:
         self.enemies: list[Enemy] = []
         self.walls: list[list[bool]] = [[False for _ in range(10)] for _ in range(10)]
         self.dijkstra_grid: list[list[int]] = [[99999 if b else 1000 for b in a] for a in self.walls]
+        self.file: str
+        self.id: str
     def generate_dijkstra(self) -> None:
         self.dijkstra_grid = [[99999 if b else 1000 for b in a] for a in self.walls]
         changed = True
@@ -94,7 +96,12 @@ class World:
         floor.player = player
         floor.walls = walls
         floor.generate_dijkstra()
+        floor.file = filename
+        floor.id = floor_id
         return floor 
+    def calculate_xp(self):
+        original_floor:World = World.open_layout_from_file(self.file,self.id,self.player)
+        return int(sum([e.get_xp() for e in original_floor.enemies]))
     def take_turn(self) -> bool:
         print(self)
         is_alive = self.player.take_turn(self)
@@ -103,6 +110,7 @@ class World:
         self.generate_dijkstra()
         [enemy.take_turn(self) for enemy in self.enemies]
         if len(self.enemies) == 0:
+            self.player.xp += self.calculate_xp()
             ... # End of floor
         return True
 

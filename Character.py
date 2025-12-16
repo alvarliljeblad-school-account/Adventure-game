@@ -2,27 +2,60 @@ import gameInput
 from vector import Vec2
 import termcolor
 import random
+import math
 class Character:
     """Class for the player character, containing stats and methods for displaying them"""
-    def __init__(self,strength:int, hp:int):
-        self.strength: int = strength
-        self.strength_bonus:int = 0
-        self.hp: int = hp
-        self.max_hp: int = hp
-        self.inventory: list = []
-        self.level:int = 1
-        self.damage: int = 3
-        self.max_inventory: int = 5
+    level_thresholds:dict = {1:0,2:300,3:900,4:2700,5:6500,6:14000,7:23000,8:34000,9:48000,10:64000}
+    def __init__(self):
+        self.xp: int = 0
+        self.level:int
+        self.strength: int
+        self.max_hp: int 
+        self.hp: int 
+        self.damage: int 
+        self.max_inventory: int 
+        self.actions:int 
+        self.movement:int 
+        self.defence:int 
+        self.strength_bonus:int 
         self.pos: Vec2 = Vec2(0,0)
-        self.actions:int = 1
-        self.movement:int = 5
-        self.defence:int = 10
+        self.inventory: list = []
+        self.calculate_stats()
+        self.hp = self.max_hp
+        print(self.level)
+    def calculate_stats(self):
+        for i in range(1,len(self.level_thresholds)+1):
+            if self.level_thresholds[i] <= self.xp:
+                self.level = i
+        self.strength = self.level
+        self.max_hp = self.level
+        self.damage = 3
+        self.max_inventory = 3*self.strength
+        self.actions = 1
+        self.movement = 5
+        self.defence = math.floor(self.strength/2)
+        self.strength_bonus = 0
+        for item in self.inventory:
+            item.gain(self)
+    def read_character(path):
+        file = open(file=path)
+        attribute_line = file.readline(0)
+        file.close()
+        attribute_line = attribute_line.strip()
+        attributes = attribute_line.split(" ")
+        char = Character()
+        char.xp = int(attributes[0])
+        char.pos = Vec2(int(attributes[1]),int(attributes[2]))
+        ... #add inventory import 
+    def write_character(self,path):
+        ... # add character saving
+
     def display_stats(self) -> None:
         """Prints the players current stats"""
         print(f"""
                 Stats:
             Hp: {self.hp}/{self.max_hp}
-            Level: {self.level}
+            Level: {self.level}/Xp:{self.xp}
             Strength: base: {self.strength} + items: {self.strength_bonus} = {self.strength+ self.strength_bonus}""")
     def display_inventory(self) -> None:
         """Prints the constents of the playes inventory"""
@@ -163,7 +196,7 @@ class Character:
                     remaining_movement-=1
                 else:
                     print(termcolor.colored("Out of movement","red"))
-            #Check if enemies have died
+            #Remove dead enemies
             print(world.enemies)
             world.enemies = list(filter(lambda a: a.hp > 0, world.enemies))
         return True
