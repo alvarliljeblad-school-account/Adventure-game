@@ -7,9 +7,40 @@ class Character:
     """Class for the player character, containing stats and methods for displaying them"""
     level_thresholds:dict = {1:0,2:300,3:900,4:2700,5:6500,6:14000,7:23000,8:34000,9:48000,10:64000}
     def __init__(self):
-        self.xp: int = 0
-        self.level:int
-        self.strength: int
+        #Xp, character level and other simple stats not dependent on class or ability scores
+        self.xp: int = 0 # Xp base stat
+        self.level:int # Level is determinded from xp stat
+        self.proficiency_bonus:int # The bonus given if character is proficient in something, Determined from level
+        self.charcter_class
+        self.character_race
+        self.background
+        self.alignment
+        self.name
+
+        #The characters ability scores
+        self.strength: int = 10
+        self.dexterity:int = 10
+        self.constitution: int = 10
+        self.intelligence:int = 10
+        self.wisdom: int = 10
+        self.charisma:int = 10
+
+        # Ability modifiers detirmined by the ability scores
+        self.str_mod:int
+        self.dex_mod:int
+        self.con_mod:int
+        self.int_mod:int
+        self.wis_mod:int
+        self.cha_mod:int
+
+        # Lists of character features
+        self.proficiencies: list[str]
+        self.saving_throws:dict
+        self.skills:dict
+        self.features:list
+        self.inventory: list
+
+        #Other stats determined from base stats
         self.max_hp: int 
         self.hp: int 
         self.damage: int 
@@ -18,16 +49,29 @@ class Character:
         self.movement:int 
         self.defence:int 
         self.strength_bonus:int 
+
         self.pos: Vec2 = Vec2(0,0)
-        self.inventory: list = []
+        #Characters inventory
         self.calculate_stats()
         self.hp = self.max_hp
         print(self.level)
     def calculate_stats(self):
+        #determine character level
         for i in range(1,len(self.level_thresholds)+1):
             if self.level_thresholds[i] <= self.xp:
                 self.level = i
-        self.strength = self.level
+        #Detirmine proficciency bonus
+        self.proficiency_bonus = math.ceil(self.level/4)+1
+
+        #Detirmine ability modifiers
+        self.str_mod = math.floor((self.strength-10)/2)
+        self.dex_mod = math.floor((self.dexterity-10)/2)
+        self.con_mod = math.floor((self.constitution-10)/2)
+        self.int_mod = math.floor((self.intelligence-10)/2)
+        self.wis_mod = math.floor((self.wisdom-10)/2)
+        self.cha_mod = math.floor((self.charisma-10)/2)
+
+
         self.max_hp = self.level
         self.damage = 3
         self.max_inventory = 3*self.strength
