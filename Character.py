@@ -3,6 +3,8 @@ from vector import Vec2
 import termcolor
 import random
 import math
+import Item
+from dice import Dice
 class Character:
     """Class for the player character, containing stats and methods for displaying them"""
     level_thresholds:dict = {1:0,2:300,3:900,4:2700,5:6500,6:14000,7:23000,8:34000,9:48000,10:64000}
@@ -34,21 +36,32 @@ class Character:
         self.cha_mod:int
 
         # Lists of character features
-        self.proficiencies: list[str]
-        self.saving_throws:dict
+        self.armour_proficiencies: list[str]
+        self.weapon_proficiencies: list[str]
+        self.tool_proficiencies: list[str]
+        self.save_proficiencies: list[str]
+        self.skill_proficiencies: list[str]
+        self.saving_throws:dict = {"str":0,"dex":0,"con":0,"int":0,"wis":0,"cha":0}
         self.skills:dict
-        self.features:list
+        self.features:list = []
+        self.action_list: list = []
         self.inventory: list = []
+        self.Lhand:Item.Item = None
+        self.Rhand:Item.Item = None
+        self.armour:Item.Item = None
+        
 
         #Other stats determined from base stats
-        self.max_hp: int 
-        self.hp: int 
-        self.damage: int 
-        self.max_inventory: int 
-        self.actions:int 
-        self.movement:int 
-        self.defence:int 
-        self.strength_bonus:int 
+        self.hit_dice: Dice = Dice("1d10")
+        self.max_hp: int = 0
+        self.hp: int = 0
+        self.damage: int = 0
+        self.max_inventory: int = 0
+        self.actions:int = 0
+        self.movement:int = 0
+        self.defence:int = 0
+        self.strength_bonus:int = 0
+        self.action_cooldowns:dict = {} 
 
         self.pos: Vec2 = Vec2(0,0)
         #Characters inventory
@@ -71,8 +84,10 @@ class Character:
         self.wis_mod = math.floor((self.wisdom-10)/2)
         self.cha_mod = math.floor((self.charisma-10)/2)
 
+        for feat in self.features:
+            feat.calculate()
 
-        self.max_hp = self.level
+        self.max_hp = 4 + (6+self.con_mod)*self.level
         self.damage = 3
         self.max_inventory = 3*self.strength
         self.actions = 1
@@ -124,7 +139,7 @@ class Character:
         item.gain(self)
     def get_strength(self) -> int:
         """Return the characters strength with all bonuses added"""
-        return self.strength+self.strength_bonus
+        return self.str_mod
     def get_defence(self) -> int:
         return self.defence
     def take_damage(self, damage: int) -> None:
