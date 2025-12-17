@@ -11,11 +11,11 @@ class Character:
         self.xp: int = 0 # Xp base stat
         self.level:int # Level is determinded from xp stat
         self.proficiency_bonus:int # The bonus given if character is proficient in something, Determined from level
-        self.charcter_class
-        self.character_race
-        self.background
-        self.alignment
-        self.name
+        self.charcter_class:str
+        self.character_race:str
+        self.background:str
+        self.alignment:str
+        self.name:str
 
         #The characters ability scores
         self.strength: int = 10
@@ -38,7 +38,7 @@ class Character:
         self.saving_throws:dict
         self.skills:dict
         self.features:list
-        self.inventory: list
+        self.inventory: list = []
 
         #Other stats determined from base stats
         self.max_hp: int 
