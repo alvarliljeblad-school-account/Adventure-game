@@ -6,6 +6,7 @@ import math
 import Item
 from dice import Dice
 import CharacterClass
+from action import Action
 class Character:
     """Class for the player character, containing stats and methods for displaying them"""
     level_thresholds:dict = {1:0,2:300,3:900,4:2700,5:6500,6:14000,7:23000,8:34000,9:48000,10:64000}
@@ -44,8 +45,8 @@ class Character:
         self.skill_proficiencies: list[str]
         self.saving_throws:dict = {"str":0,"dex":0,"con":0,"int":0,"wis":0,"cha":0}
         self.skills:dict
-        self.features:list = []
-        self.action_list: list = []
+        self.features:list
+        self.action_list: list
         self.inventory: list = []
         self.Lhand:Item.Item = None
         self.Rhand:Item.Item = None
@@ -79,11 +80,14 @@ class Character:
 
         # Get Feats
         self.features = []
+        self.action_list = []
         for level in range(1,self.level+1):
             self.features += self.charcter_class.features[level]
 #            self.features += self.character_race.features[level]
         for feat in self.features:
             feat.calculate(self)
+        
+        self.action_list.append(Action("Attack",self.try_attack))
         
 
         #Detirmine ability modifiers
@@ -124,7 +128,12 @@ class Character:
                 Stats:
             Hp: {self.hp}/{self.max_hp}
             Level: {self.level}/Xp:{self.xp}
-            Strength: base: {self.strength} + items: {self.strength_bonus} = {self.strength+ self.strength_bonus}""")
+            Strength: {self.strength} ({self.str_mod:+})
+            Dexterity: {self.dexterity} ({self.dex_mod:+})
+            Constitution: {self.constitution} ({self.con_mod:+})
+            Intelligence: {self.intelligence} ({self.int_mod:+})
+            Wisdom: {self.wisdom} ({self.wis_mod:+})
+            Charisma: {self.charisma} ({self.cha_mod:+})""")
     def display_inventory(self) -> None:
         """Prints the constents of the playes inventory"""
         print("Inventory:")
@@ -177,7 +186,7 @@ class Character:
         else:
             print("You miss")
 
-    def try_attack(self,enemies):
+    def try_attack(self,character,world):
         print("What direction do you attack in  A: Left S: Down W: Up   D: Right")
         inp = gameInput.get_str_input(["A","S","W","D"])
         attack_dir = Vec2(0,0)
@@ -191,9 +200,9 @@ class Character:
             attack_dir = Vec2(1,0)
         attack_pos = self.pos + attack_dir
         print(attack_pos)
-        print([str(enemy.pos) for enemy in enemies]) 
+        print([str(enemy.pos) for enemy in world.enemies]) 
         available_enemies = []
-        for enemy in enemies:
+        for enemy in world.enemies:
             print(enemy.pos,attack_pos)
             if enemy.pos == attack_pos:
                 available_enemies.append(enemy)
@@ -209,6 +218,12 @@ class Character:
         else:
             print("There are no eligeble enemies")
 
+    def take_action(self,world):
+        print("What action do ypu want to do?")
+        for i,action in enumerate(self.action_list):
+            print(f"{i}:{action.name}")
+        inp = int(gameInput.get_str_input(list(range(len(self.action_list)))))
+        self.action_list[inp].function(self,world)
     def take_turn(self, world):
         #Check if dead
         if self.hp <= 0:
@@ -218,8 +233,8 @@ class Character:
         while remaining_actions > 0 or remaining_movement > 0:
             print(f"Hp: {self.hp}/{self.max_hp}, Str: {self.get_strength()}, Level: {self.level}, Actions: {remaining_actions}/{self.actions}, Movement: {remaining_movement}/{self.movement}")
             print(world)
-            print("""A: Left  S: Down   W: Up   D: Right    T: Attack   I: Show inventory   C:Check stats   P:Pass""")
-            inp = gameInput.get_str_input(["A","S","W","D","T","I","C","P"])
+            print("""A: Left  S: Down   W: Up   D: Right    T: Attack   I: Show inventory   C:Check stats   P:Pass  E: Use action""")
+            inp = gameInput.get_str_input(["A","S","W","D","T","I","C","P","E"])
             if inp == "p":
                 remaining_actions = 0
                 remaining_movement = 0
@@ -232,6 +247,8 @@ class Character:
             elif inp == "t":
                 self.try_attack(world.enemies)
                 remaining_actions-=1
+            elif inp == "e":
+                self.take_action(world)
             elif inp == "a":
                 if world.walls[self.pos.y][self.pos.x-1]:
                     print("There is a wall in the way")

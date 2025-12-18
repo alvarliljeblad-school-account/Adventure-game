@@ -10,4 +10,4 @@ class Dice:
         self.max_value = sides
         self.average_value = (self.sides/2)+0.5
     def roll(self):
-        return sum([random.randint(1,self.sides) for _ in self.ammount])
+        return int(sum([random.randint(1,self.sides) for _ in range(self.ammount)]))

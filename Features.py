@@ -31,7 +31,7 @@ class Proficiencies(Feature):
 class AbilityScoreIncrease(Feature):
     def __init__(self):
         super().__init__()
-        self.ability_increases = {"str":2,"dex":1,"con":3,"int":1,"wis":4,"cha":6}
+        self.ability_increases = {"str":0,"dex":0,"con":0,"int":0,"wis":0,"cha":0}
     def calculate(self, character):
         character.strength += self.ability_increases["str"]
         character.dexterity += self.ability_increases["dex"]
@@ -47,9 +47,9 @@ class SecondWind(Feature):
     def __init__(self):
         super().__init__()
     def calculate(self, character):
-        if not character.action_uses["Second Wind"]:
+        if "Second Wind" in character.action_uses:
             character.action_uses["Second Wind"] = 1
         character.action_list.append(Action("Second Wind",self.use))
-    def use(self,character):
-        character.hp += Dice("1d10") + character.level
+    def use(self,character,world):
+        character.hp += Dice("1d10").roll() + character.level
         
