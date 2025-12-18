@@ -5,4 +5,4 @@ class CharacterClass:
         pass
 
 class Fighter(CharacterClass):
-    features = {0:Features.AbilityScoreIncrease()}
+    features = {1:[Features.AbilityScoreIncrease(),Features.SecondWind()]}

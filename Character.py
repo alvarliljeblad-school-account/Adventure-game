@@ -5,6 +5,7 @@ import random
 import math
 import Item
 from dice import Dice
+import CharacterClass
 class Character:
     """Class for the player character, containing stats and methods for displaying them"""
     level_thresholds:dict = {1:0,2:300,3:900,4:2700,5:6500,6:14000,7:23000,8:34000,9:48000,10:64000}
@@ -13,7 +14,7 @@ class Character:
         self.xp: int = 0 # Xp base stat
         self.level:int # Level is determinded from xp stat
         self.proficiency_bonus:int # The bonus given if character is proficient in something, Determined from level
-        self.charcter_class:str
+        self.charcter_class:CharacterClass.CharacterClass = CharacterClass.Fighter()
         self.character_race:str
         self.background:str
         self.alignment:str
@@ -61,7 +62,7 @@ class Character:
         self.movement:int = 0
         self.defence:int = 0
         self.strength_bonus:int = 0
-        self.action_cooldowns:dict = {} 
+        self.action_uses:dict = {} 
 
         self.pos: Vec2 = Vec2(0,0)
         #Characters inventory
@@ -76,6 +77,15 @@ class Character:
         #Detirmine proficciency bonus
         self.proficiency_bonus = math.ceil(self.level/4)+1
 
+        # Get Feats
+        self.features = []
+        for level in range(1,self.level+1):
+            self.features += self.charcter_class.features[level]
+#            self.features += self.character_race.features[level]
+        for feat in self.features:
+            feat.calculate(self)
+        
+
         #Detirmine ability modifiers
         self.str_mod = math.floor((self.strength-10)/2)
         self.dex_mod = math.floor((self.dexterity-10)/2)
@@ -84,8 +94,7 @@ class Character:
         self.wis_mod = math.floor((self.wisdom-10)/2)
         self.cha_mod = math.floor((self.charisma-10)/2)
 
-        for feat in self.features:
-            feat.calculate()
+       
 
         self.max_hp = 4 + (6+self.con_mod)*self.level
         self.damage = 3
