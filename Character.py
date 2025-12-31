@@ -8,6 +8,8 @@ from dice import Dice
 import CharacterClass
 from action import Action
 import Gear.Armour
+import combat
+import Gear.weapons
 class Character:
     """Class for the player character, containing stats and methods for displaying them"""
     level_thresholds:dict = {1:0,2:300,3:900,4:2700,5:6500,6:14000,7:23000,8:34000,9:48000,10:64000}
@@ -80,7 +82,7 @@ class Character:
         #Detirmine proficciency bonus
         self.proficiency_bonus = math.ceil(self.level/4)+1
         self.armour_proficiencies =[]
-        self.weapon_proficiencies = []
+        self.weapon_proficiencies = ["Unarmed"]
         self.tool_proficiencies = []
         self.save_proficiencies = []
         self.skill_proficiencies = []
@@ -115,6 +117,8 @@ class Character:
         self.max_inventory = 3*self.strength
         self.actions = 1
         self.movement = 5
+        self.remaining_actions = self.actions
+        self.remaining_movement = self.movement
         self.defence = math.floor(self.strength/2)
         for item in self.inventory:
             item.gain(self)
@@ -184,52 +188,34 @@ class Character:
             print("You decide not to use an item")
             return
         self.inventory[int(itemid)].activate(self)
-    def attack(self,opponent):
-        attack_roll = random.randint(1,20)
-        attack_value = attack_roll + self.get_strength()
-        if attack_roll == 20:
-            print(f"Critical hit You deal {self.damage*2} damage to the enemy")
-            opponent.take_damage(self.damage*2)
-        elif attack_value >= opponent.get_defence():
-            print(f"You hi the enemy and deal {self.damage} damage")
-            opponent.take_damage(self.damage)
-        else:
-            print("You miss")
 
-    def try_attack(self,character,world):
-        print("What direction do you attack in  A: Left S: Down W: Up   D: Right")
-        inp = gameInput.get_str_input(["A","S","W","D"])
-        attack_dir = Vec2(0,0)
-        if inp == "a":
-            attack_dir = Vec2(-1,0)
-        elif inp == "s":
-            attack_dir = Vec2(0,1)
-        elif inp == "w":
-            attack_dir = Vec2(0,-1)
-        elif inp == "d":
-            attack_dir = Vec2(1,0)
-        attack_pos = self.pos + attack_dir
-        print(attack_pos)
-        print([str(enemy.pos) for enemy in world.enemies]) 
-        available_enemies = []
-        for enemy in world.enemies:
-            print(enemy.pos,attack_pos)
-            if enemy.pos == attack_pos:
-                available_enemies.append(enemy)
+    def try_attack(self,world):
+        self.remaining_actions-=1
+        print("What enemy do you want to attack, write enemy number")
+        enemy_inp = int(gameInput.get_str_input(range(len(world.enemies))))
+        print("What weapon do you use:")
+        possible_attacks = ["P"]
+        if self.Lhand != None:
+            print(f"L: {self.Lhand}")
+            possible_attacks.append("L")
+        if self.Rhand != None:
+            print(f"R: {self.Rhand}")
+            possible_attacks.append("R")
+        print("P:Punch")
+        weapon_inp = gameInput.get_str_input(possible_attacks)
+        if weapon_inp == "l":
+            weapon = self.Lhand
+        if weapon_inp == "r":
+            weapon = self.Rhand
+        if weapon_inp == "p":
+            weapon = Gear.weapons.ImprovisedWeapons.unarmed
+
+        combat.melee_weapon_attack(self,world.enemies[enemy_inp],weapon)
         
-        if len(available_enemies) == 1:
-            self.attack(available_enemies[0])
-        elif len(available_enemies) > 1:
-            print("There are multiple enemies on that tile, choose one")
-            for enemy in range(len(available_enemies)):
-                print(f"{enemy}: {available_enemies[enemy]}",end=",")
-            enemy_choise = gameInput.get_str_input(range(len(available_enemies)))
-            self.attack(available_enemies(enemy_choise))
-        else:
-            print("There are no eligeble enemies")
+
 
     def take_action(self,world):
-        print("What action do ypu want to do?")
+        print("What action do you want to do?")
         for i,action in enumerate(self.action_list):
             print(f"{i}:{action.name}")
         inp = int(gameInput.get_str_input(list(range(len(self.action_list)))))
@@ -238,16 +224,17 @@ class Character:
         #Check if dead
         if self.hp <= 0:
             return False
-        remaining_actions = self.actions
-        remaining_movement = self.movement
-        while remaining_actions > 0 or remaining_movement > 0:
-            print(f"Hp: {self.hp}/{self.max_hp}, Str: {self.get_strength()}, Level: {self.level}, Actions: {remaining_actions}/{self.actions}, Movement: {remaining_movement}/{self.movement}")
+        self.calculate_stats() # Recalculate stats
+        self.remaining_actions = self.actions
+        self.remaining_movement = self.movement
+        while self.remaining_actions > 0 or self.remaining_movement > 0:
+            print(f"Hp: {self.hp}/{self.max_hp}, Str: {self.get_strength()}, Level: {self.level}, Actions: {self.remaining_actions}/{self.actions}, Movement: {self.remaining_movement}/{self.movement}")
             print(world)
             print("""A: Left  S: Down   W: Up   D: Right    T: Attack   I: Show inventory   C:Check stats   P:Pass  E: Use action""")
             inp = gameInput.get_str_input(["A","S","W","D","T","I","C","P","E"])
             if inp == "p":
-                remaining_actions = 0
-                remaining_movement = 0
+                self.remaining_actions = 0
+                self.remaining_movement = 0
             elif inp == "i":
                 self.display_inventory()
                 gameInput.pause()
@@ -255,43 +242,44 @@ class Character:
                 self.display_stats()
                 gameInput.pause()
             elif inp == "t":
-                self.try_attack(world.enemies)
-                remaining_actions-=1
+                self.try_attack(world)
             elif inp == "e":
-                self.take_action(world)
+                if self.remaining_actions > 0:
+                    self.take_action(world)
+                else:
+                    print(termcolor.colored("Out of actions","red"))
             elif inp == "a":
                 if world.walls[self.pos.y][self.pos.x-1]:
                     print("There is a wall in the way")
-                elif remaining_movement > 0:
+                elif self.remaining_movement > 0:
                     self.pos.x-=1
-                    remaining_movement-=1
+                    self.remaining_movement-=1
                 else:
                     print(termcolor.colored("Out of movement","red"))
             elif inp == "d":
                 if world.walls[self.pos.y][self.pos.x+1]:
                     print("There is a wall in the way")
-                elif remaining_movement > 0:
+                elif self.remaining_movement > 0:
                     self.pos.x+=1
-                    remaining_movement-=1
+                    self.remaining_movement-=1
                 else:
                     print(termcolor.colored("Out of movement","red"))
             elif inp == "w":
                 if world.walls[self.pos.y-1][self.pos.x]:
                     print("There is a wall in the way")
-                elif remaining_movement > 0:
+                elif self.remaining_movement > 0:
                     self.pos.y-=1
-                    remaining_movement-=1
+                    self.remaining_movement-=1
                 else:
                     print(termcolor.colored("Out of movement","red"))
             elif inp == "s":
                 if world.walls[self.pos.y+1][self.pos.x]:
                     print("There is a wall in the way")
-                elif remaining_movement > 0:
+                elif self.remaining_movement > 0:
                     self.pos.y+=1
-                    remaining_movement-=1
+                    self.remaining_movement-=1
                 else:
                     print(termcolor.colored("Out of movement","red"))
             #Remove dead enemies
-            print(world.enemies)
             world.enemies = list(filter(lambda a: a.hp > 0, world.enemies))
         return True

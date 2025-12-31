@@ -12,12 +12,15 @@ class enemyTable:
         hp=7,
         speed=30,
         proficiency_bonus=2,
-        challange=0.25,
+        xp=50,
         str_mod=-1,
         dex_mod=2,
         con_mod=0,
         int_mod=0,
         wis_mod=-1,
         cha_mod=-1,
+        resistances=[],
+        vulnerabilities=[],
+        immunities=[],
         actions=[goblin_scimiar]
         )

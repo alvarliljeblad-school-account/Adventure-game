@@ -9,30 +9,58 @@ def deal_single_damage(target, damage:int, damage_type:str):
         damage = 0
     target.hp -= damage
 
-def deal_damage(target,damage_list:list):
+def deal_damage(attacker, target,damage_list:list):
     """Takes a list of damages and damage types and applies all of them"""
     # This function is needed for when for example a poisoned weapon is used, then the weapon deals both it's normal damage and the poison damage
+    
+    calculated_damage_list = []
+    print(damage_list)
     for damage in damage_list:
         if type(damage[0]) == int:
-            deal_single_damage(target, damage[0],damage[1])
+            # Dealing a set ammount of damage
+            dmg = damage[0]
         elif type(damage[0]) == dice.Dice:
-            deal_single_damage(target, damage[0].roll(),damage[1])
+            # Dealing a random amount of damage
+            dmg = damage[0].roll()
+        elif type(damage[0]) == str:
+            # Dealing damage equal to an ability modifier
+            if damage[0] == "str":
+                dmg = attacker.str_mod
+            elif damage[0] == "dex":
+                dmg = attacker.dex_mod
+            elif damage[0] == "con":
+                dmg = attacker.con_mod
+            elif damage[0] == "int":
+                dmg = attacker.con_mod
+            elif damage[0] == "wis":
+                dmg = attacker.wis_mod
+            elif damage[0] == "cha":
+                dmg = attacker.cah_mod
+        calculated_damage_list.append((dmg,damage[1]))
+        deal_single_damage(target,dmg,damage[1])
+    damage_string = ""
+    for attribute in calculated_damage_list:
+        damage_string += f"{str(attribute[0])} {attribute[1]}"
+    print(f"You deal {damage_string} damage")
+            
 
-def attack(target, damage_list:list, attack_modifier:int):
+def attack(attacker, target, damage_list:list, attack_modifier:int):
     """Code for resolving an attack"""
     natural_attack_roll = dice.Dice("1d20").roll()
     attack_roll = natural_attack_roll + attack_modifier
+    print(f"You roll a {natural_attack_roll} + {attack_modifier} = {attack_roll}")
     if natural_attack_roll == 20:
         # If the attacker rolls a natural 20 deal damage twice
-        deal_damage(target,damage_list)
-        deal_damage(target,damage_list)
+        print("A critical Hit, you deal damage twice")
+        deal_damage(attacker, target,damage_list)
+        deal_damage(attacker, target,damage_list)
     elif natural_attack_roll == 1:
         # If the attacker rolls a natural 1 they always miss
         return
     elif attack_roll > target.ac:
         # if the attacker rolls higher than the targets 
-        deal_damage(target,damage_list)
-    elif attack <= target.ac:
+        deal_damage(attacker, target,damage_list)
+    elif attack_roll <= target.ac:
         # If the attacker rills lower or equal to the ac they miss
         return
 
@@ -50,7 +78,7 @@ def melee_weapon_attack(attacker, target, weapon:Item.MeleeWeapon):
     else:
         modifier = attacker.str_mod
 
-    if weapon.proficiency in attacker.proficiencies:
+    if weapon.proficiency in attacker.weapon_proficiencies:
         modifier += attacker.proficiency_bonus
     
-    attack(target,weapon.damage_list,modifier)
+    attack(attacker, target,weapon.damage_list,modifier)

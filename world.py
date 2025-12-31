@@ -105,7 +105,7 @@ class World:
         return floor 
     def calculate_xp(self):
         original_floor:World = World.open_layout_from_file(self.file,self.id,self.player)
-        return int(sum([e.get_xp() for e in original_floor.enemies]))
+        return int(sum([e.xp for e in original_floor.enemies]))
     def take_turn(self) -> bool:
         print(self)
         is_alive = self.player.take_turn(self)

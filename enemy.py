@@ -9,12 +9,16 @@ class Enemy:
                  hp:dice.Dice, 
                  speed:int, 
                  proficiency_bonus:int, 
-                 challange:float, str_mod:int ,
+                 xp:int, 
+                 str_mod:int ,
                  dex_mod:int,
                  con_mod:int,
                  int_mod:int,
                  wis_mod:int,
                  cha_mod:int, 
+                 resistances:list,
+                 vulnerabilities:list,
+                 immunities:list,
                  actions:int):
         self.name:str = name
         self.ac:int = ac
@@ -22,7 +26,7 @@ class Enemy:
         self.speed:int = speed
         self.proficiency_bonus:int = proficiency_bonus
 
-        self.challange:float = challange
+        self.xp:float = xp
         
         self.str_mod:int = str_mod
         self.dex_mod:int = dex_mod
@@ -31,31 +35,16 @@ class Enemy:
         self.wis_mod:int = wis_mod
         self.cha_mod:int = cha_mod
 
+        self.resistances:list = resistances
+        self.vulnerabilities:list = vulnerabilities
+        self.immunities:list = immunities
+
         self.actions:list = actions
         
         self.pos:Vec2
         
     def __str__(self):
         return f"Enemy at pos: {str(self.pos)}"
-    def get_xp(self) -> int:
-        return self.strength*self.hp*self.damage
-    def get_strength(self) -> int:
-        return self.strength
-    def get_defence(self) -> int:
-        return self.defence
-    def take_damage(self, damage: int) -> int:
-        self.hp -= damage
-    def attack(self,opponent):
-        attack_roll = random.randint(1,20)
-        attack_value = attack_roll + self.get_strength()
-        if attack_roll == 20:
-            print(f"Critical hit! You take {self.damage*2} damage")
-            opponent.take_damage(self.damage)
-        elif attack_value >= opponent.get_defence():
-            opponent.take_damage(self.damage)
-            print(f"You take {self.damage} damage")
-        else:
-            print(f"The enemy misses")
     def take_turn(self,world):
         min_neighbour:int = world.dijkstra_grid[self.pos.y][self.pos.x]
         min_pos:Vec2 = self.pos

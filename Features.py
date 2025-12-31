@@ -31,7 +31,7 @@ class Proficiencies(Feature):
 class AbilityScoreIncrease(Feature):
     def __init__(self):
         super().__init__()
-        self.ability_increases = {"str":0,"dex":0,"con":0,"int":0,"wis":0,"cha":0}
+        self.ability_increases = {"str":100,"dex":0,"con":0,"int":0,"wis":0,"cha":0}
     def calculate(self, character):
         character.strength += self.ability_increases["str"]
         character.dexterity += self.ability_increases["dex"]
