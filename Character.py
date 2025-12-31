@@ -77,6 +77,11 @@ class Character:
                 self.level = i
         #Detirmine proficciency bonus
         self.proficiency_bonus = math.ceil(self.level/4)+1
+        self.armour_proficiencies =[]
+        self.weapon_proficiencies = []
+        self.tool_proficiencies = []
+        self.save_proficiencies = []
+        self.skill_proficiencies = []
 
         # Get Feats
         self.features = []
