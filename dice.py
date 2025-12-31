@@ -9,5 +9,8 @@ class Dice:
             self.sides = int(ammount.split("d")[1])
         self.max_value = sides
         self.average_value = (self.sides/2)+0.5
-    def roll(self):
-        return int(sum([random.randint(1,self.sides) for _ in range(self.ammount)]))
+    def roll(self, advantage = False):
+        if advantage == False:
+            return int(sum([random.randint(1,self.sides) for _ in range(self.ammount)]))
+        else:
+            return max(self.roll(advantage=False), self.roll(advantage=False))

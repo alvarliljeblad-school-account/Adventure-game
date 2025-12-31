@@ -1,4 +1,5 @@
 import random
+import dice
 class Item:
     """Class for items"""
     def __init__(self,name:str,weight:int):
@@ -14,9 +15,21 @@ class Item:
         """Returns a string of the item"""
         return f"+{self.potency} {self.name}"
 
-class MeleeWeapon(Item):
-    def __init__(self, name,weight, damage, damage_type,proficiency):
+class Weapon(Item):
+    def __init__(self, name:str,weight:int, damage_list:list,proficiency:str,properties:list):
         super().__init__(name,weight)
-        self.damage = damage
-        self.damage_type = damage_type
+        self.damage_list = damage_list
+        self.proficiency = proficiency
+        self.properties = properties
+
+class MeleeWeapon(Weapon):
+    def __init__(self, name:str, weight:int, damage_list:list, proficiency:str, properties:list):
+        super().__init__(name, weight, damage_list, proficiency, properties)
+
+class Armour(Item):
+    def __init__(self, name:str, weight:int, ac:int, dex_cap:int, stealth_disadvantage:bool,proficiency:str):
+        super().__init__(name, weight)
+        self.ac = ac
+        self.dex_cap =dex_cap
+        self.stealth_disadvantage = stealth_disadvantage
         self.proficiency = proficiency

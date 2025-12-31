@@ -7,6 +7,7 @@ import Item
 from dice import Dice
 import CharacterClass
 from action import Action
+import Gear.Armour
 class Character:
     """Class for the player character, containing stats and methods for displaying them"""
     level_thresholds:dict = {1:0,2:300,3:900,4:2700,5:6500,6:14000,7:23000,8:34000,9:48000,10:64000}
@@ -44,25 +45,26 @@ class Character:
         self.save_proficiencies: list[str]
         self.skill_proficiencies: list[str]
         self.saving_throws:dict = {"str":0,"dex":0,"con":0,"int":0,"wis":0,"cha":0}
+        self.resistances:list = []
+        self.vulnerabilities:list = []
+        self.immunities:list = []
         self.skills:dict
         self.features:list
         self.action_list: list
         self.inventory: list = []
         self.Lhand:Item.Item = None
         self.Rhand:Item.Item = None
-        self.armour:Item.Item = None
+        self.armour:Item.Armour = Gear.Armour.HeavyArmour.Plate
         
 
         #Other stats determined from base stats
         self.hit_dice: Dice = Dice("1d10")
         self.max_hp: int = 0
         self.hp: int = 0
+        self.ac:int = 0
         self.damage: int = 0
-        self.max_inventory: int = 0
         self.actions:int = 0
         self.movement:int = 0
-        self.defence:int = 0
-        self.strength_bonus:int = 0
         self.action_uses:dict = {} 
 
         self.pos: Vec2 = Vec2(0,0)
@@ -103,7 +105,10 @@ class Character:
         self.wis_mod = math.floor((self.wisdom-10)/2)
         self.cha_mod = math.floor((self.charisma-10)/2)
 
-       
+        if self.armour == None:
+            self.ac = 10+self.dex_mod
+        else:
+            self.ac = self.armour.ac + max(self.dex_mod, self.armour.dex_cap)
 
         self.max_hp = 4 + (6+self.con_mod)*self.level
         self.damage = 3
@@ -111,7 +116,6 @@ class Character:
         self.actions = 1
         self.movement = 5
         self.defence = math.floor(self.strength/2)
-        self.strength_bonus = 0
         for item in self.inventory:
             item.gain(self)
     def read_character(path):
@@ -132,6 +136,7 @@ class Character:
         print(f"""
                 Stats:
             Hp: {self.hp}/{self.max_hp}
+            AC: {self.ac}
             Level: {self.level}/Xp:{self.xp}
             Strength: {self.strength} ({self.str_mod:+})
             Dexterity: {self.dexterity} ({self.dex_mod:+})

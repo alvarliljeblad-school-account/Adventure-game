@@ -1,7 +1,9 @@
+import termcolor
+
 from Character import Character
 from vector import Vec2
 from enemy import Enemy
-import termcolor
+import enemy_types
 class World:
     def __init__(self):
         self.player: Character
@@ -80,7 +82,9 @@ class World:
                     if map_objects[char][0] == "e":
                         # Check for enemies and add them to enemies
                         attributes = map_objects[char]
-                        enemies.append(Enemy(int(attributes[1]),int(attributes[2]),int(attributes[3]),Vec2(len(mapline)-1,len(walls))))
+                        enemy = enemy_types.enemyTable.goblin
+                        enemy.pos = Vec2(len(mapline)-1,len(walls))
+                        enemies.append(enemy)
                     if map_objects[char][0] == "p":
                         # Check for player and set player position
                         player.pos = Vec2(len(mapline)-1,len(walls))
