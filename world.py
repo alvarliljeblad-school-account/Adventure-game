@@ -121,8 +121,12 @@ class World:
     def __str__(self) -> str:
         floormap = [[termcolor.colored("▮ ", "white") if wall else termcolor.colored("▯ ","white") for wall in row] for row in self.walls]
         floormap[self.player.pos.y][self.player.pos.x] = termcolor.colored("P ", "light_magenta")
-        for enemy in self.enemies:
-            floormap[enemy.pos.y][enemy.pos.x] = termcolor.colored("E ","red")
+        for i,enemy in enumerate(self.enemies):
+            if i < 10:
+                enemy_string = str(i)+ " "
+            else:
+                enemy_string = str(i)
+            floormap[enemy.pos.y][enemy.pos.x] = termcolor.colored(enemy_string,"red")
         return "".join(["".join(row)+"\n" for row in floormap])
         
 
