@@ -1,6 +1,7 @@
 from Character import Character
 from gameInput import get_str_input
 from world import World
+import Charactercreation
 MAP_FILE = "floor_layouts.txt"
 def win() -> None:
     """Prints the win text"""
@@ -15,6 +16,7 @@ def death() -> None:
 def start() -> World:
     """Start function, contains all setup code executed when the game stars"""
     print("Welcome to the game")
+    player = Charactercreation.create_character()
     print("What floor would you like to go to")
     floor_id = get_str_input(["1"])
     player = Character()

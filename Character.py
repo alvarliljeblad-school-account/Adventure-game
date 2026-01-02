@@ -19,9 +19,6 @@ class Character:
         self.level:int # Level is determinded from xp stat
         self.proficiency_bonus:int # The bonus given if character is proficient in something, Determined from level
         self.charcter_class:CharacterClass.CharacterClass = CharacterClass.Fighter()
-        self.character_race:str
-        self.background:str
-        self.alignment:str
         self.name:str
 
         #The characters ability scores
@@ -43,20 +40,18 @@ class Character:
         # Lists of character features
         self.armour_proficiencies: list[str]
         self.weapon_proficiencies: list[str]
-        self.tool_proficiencies: list[str]
         self.save_proficiencies: list[str]
         self.skill_proficiencies: list[str]
         self.saving_throws:dict = {"str":0,"dex":0,"con":0,"int":0,"wis":0,"cha":0}
         self.resistances:list = []
         self.vulnerabilities:list = []
         self.immunities:list = []
-        self.skills:dict
         self.features:list
         self.action_list: list
         self.inventory: list = []
         self.Lhand:Item.Item = None
         self.Rhand:Item.Item = None
-        self.armour:Item.Armour = Gear.Armour.HeavyArmour.Plate
+        self.armour:Item.Armour = None
         
 
         #Other stats determined from base stats
@@ -64,7 +59,6 @@ class Character:
         self.max_hp: int = 0
         self.hp: int = 0
         self.ac:int = 0
-        self.damage: int = 0
         self.actions:int = 0
         self.movement:int = 0
         self.action_uses:dict = {} 
@@ -75,6 +69,7 @@ class Character:
         self.hp = self.max_hp
         print(self.level)
     def calculate_stats(self):
+        """Recalculates the characters stats and abilities"""
         #determine character level
         for i in range(1,len(self.level_thresholds)+1):
             if self.level_thresholds[i] <= self.xp:
@@ -83,7 +78,6 @@ class Character:
         self.proficiency_bonus = math.ceil(self.level/4)+1
         self.armour_proficiencies =[]
         self.weapon_proficiencies = ["Unarmed"]
-        self.tool_proficiencies = []
         self.save_proficiencies = []
         self.skill_proficiencies = []
 
@@ -92,7 +86,6 @@ class Character:
         self.action_list = []
         for level in range(1,self.level+1):
             self.features += self.charcter_class.features[level]
-#            self.features += self.character_race.features[level]
         for feat in self.features:
             feat.calculate(self)
         
@@ -112,11 +105,10 @@ class Character:
         else:
             self.ac = self.armour.ac + max(self.dex_mod, self.armour.dex_cap)
 
-        self.max_hp = 4 + (6+self.con_mod)*self.level
-        self.damage = 3
+        self.max_hp = self.charcter_class.max_hp
         self.max_inventory = 3*self.strength
         self.actions = 1
-        self.movement = 5
+        self.movement = 30
         self.remaining_actions = self.actions
         self.remaining_movement = self.movement
         self.defence = math.floor(self.strength/2)

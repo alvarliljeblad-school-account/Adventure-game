@@ -82,7 +82,8 @@ class World:
                     if map_objects[char][0] == "e":
                         # Check for enemies and add them to enemies
                         attributes = map_objects[char]
-                        enemy = enemy_types.enemyTable.goblin
+                        if attributes[1] == "goblin":
+                            enemy = enemy_types.enemyTable.goblin
                         enemy.pos = Vec2(len(mapline)-1,len(walls))
                         enemies.append(enemy)
                     if map_objects[char][0] == "p":
